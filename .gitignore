@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.angular/
+.env
+*.log
+.local-git-backups/
+.git-backup/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
