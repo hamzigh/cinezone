@@ -1,0 +1,7 @@
+<app-toast></app-toast>
+
+<ng-container *ngIf="(isAuthPage$ | async) === false">
+  <app-navbar></app-navbar>
+</ng-container>
+
+<router-outlet></router-outlet>

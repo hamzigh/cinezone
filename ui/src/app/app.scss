@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+app-toast {
+  display: block;
+}
+
+app-navbar {
+  display: block;
+  position: relative;
+  z-index: 100;
+}
