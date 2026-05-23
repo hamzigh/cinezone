@@ -1,0 +1,19 @@
+<nav class="navbar">
+  <div class="container flex-between">
+    <div class="navbar-brand">
+      <h1 class="logo">CineZone</h1>
+    </div>
+
+    <div class="navbar-links">
+      <a routerLink="/browse" class="nav-link">Browse</a>
+      <a routerLink="/watchlist" class="nav-link">Watchlist</a>
+    </div>
+
+    <div class="navbar-user">
+      <div *ngIf="(authService.user$ | async) as user" class="user-menu">
+        <span class="user-name">{{ user.name }}</span>
+        <button (click)="logout()" class="btn btn-text">Logout</button>
+      </div>
+    </div>
+  </div>
+</nav>

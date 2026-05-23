@@ -1,0 +1,62 @@
+<div class="detail-page">
+  <ng-container *ngIf="movie; else loading">
+    <div
+      class="backdrop"
+      [style.backgroundImage]="'url(' + movie.backdropUrl + ')'"
+    >
+      <div class="backdrop-overlay"></div>
+    </div>
+
+    <div class="container detail-content">
+      <button (click)="goBack()" class="back-btn">← Back</button>
+
+      <div class="detail-grid">
+        <div class="poster-section">
+          <img [src]="movie.posterUrl" [alt]="movie.title" class="poster" />
+        </div>
+
+        <div class="info-section">
+          <h1 class="title">{{ movie.title }}</h1>
+
+          <div class="metadata">
+            <span class="year">{{ movie.year }}</span>
+            <span class="rating">
+              <span class="star">★</span>{{ movie.rating }}/10
+            </span>
+            <span class="genre">{{ movie.genre }}</span>
+          </div>
+
+          <p class="description">{{ movie.description }}</p>
+
+          <div class="cast-section">
+            <h3>Cast</h3>
+            <div class="cast-list">
+              <span *ngFor="let actor of movie.cast" class="cast-member">
+                {{ actor }}
+              </span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button (click)="watchNow()" class="btn btn-primary">
+              ▶ Watch Now
+            </button>
+            <button
+              (click)="toggleWatchlist()"
+              [class.added]="isInWatchlist"
+              class="btn btn-secondary"
+            >
+              {{ isInWatchlist ? '✓ In Watchlist' : '＋ Add to Watchlist' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="loading-container">
+      <app-loading-skeleton type="title"></app-loading-skeleton>
+    </div>
+  </ng-template>
+</div>

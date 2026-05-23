@@ -1,0 +1,47 @@
+<div class="browse-page">
+  <div class="container">
+    <div class="browse-header">
+      <h1>Browse Movies</h1>
+    </div>
+
+    <div class="filters">
+      <input
+        type="text"
+        placeholder="Search movies..."
+        [formControl]="searchControl"
+        class="search-input"
+      />
+
+      <div class="genre-tabs">
+        <button
+          *ngFor="let genre of genres"
+          [class.active]="selectedGenre === genre"
+          (click)="selectGenre(genre)"
+          class="genre-tab"
+        >
+          {{ genre }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="loading; else movieGrid" class="loading">
+      <app-loading-skeleton type="grid"></app-loading-skeleton>
+    </div>
+
+    <ng-template #movieGrid>
+      <div class="movies-grid">
+        <a
+          *ngFor="let movie of movies$ | async"
+          [routerLink]="['/movie', movie.id]"
+          class="movie-link"
+        >
+          <app-movie-card [movie]="movie"></app-movie-card>
+        </a>
+      </div>
+
+      <div *ngIf="(movies$ | async)?.length === 0" class="no-results">
+        <p>No movies found. Try a different search or genre.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

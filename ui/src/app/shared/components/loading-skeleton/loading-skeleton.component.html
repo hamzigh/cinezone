@@ -1,0 +1,10 @@
+<div [ngClass]="'skeleton-' + type">
+  <ng-container [ngSwitch]="type">
+    <div *ngSwitchCase="'card'" class="skeleton skeleton-card"></div>
+    <div *ngSwitchCase="'grid'" class="skeleton-grid">
+      <div *ngFor="let i of [1,2,3,4]" class="skeleton skeleton-card"></div>
+    </div>
+    <div *ngSwitchCase="'text'" class="skeleton skeleton-text"></div>
+    <div *ngSwitchCase="'title'" class="skeleton skeleton-title"></div>
+  </ng-container>
+</div>

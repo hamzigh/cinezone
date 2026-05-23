@@ -1,0 +1,21 @@
+<div class="watch-page">
+  <div class="video-container">
+    <button (click)="goBack()" class="back-btn">← Back</button>
+
+    <ng-container *ngIf="loading; else playerReady">
+      <div class="skeleton-player"></div>
+    </ng-container>
+
+    <ng-template #playerReady>
+      <div class="video-player">
+        <iframe
+          *ngIf="streamUrl"
+          [src]="streamUrl | safeUrl"
+          frameborder="0"
+          allowfullscreen
+          allow="autoplay; fullscreen; picture-in-picture"
+        ></iframe>
+      </div>
+    </ng-template>
+  </div>
+</div>
