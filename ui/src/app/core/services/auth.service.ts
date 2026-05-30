@@ -1,7 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { User } from '../models/models';
 import { ApiService } from './api.service';
 
@@ -9,16 +10,20 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class AuthService {
-  private userSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
+  private userSubject = new BehaviorSubject<User | null>(null);
   public user$ = this.userSubject.asObservable();
-  public isAuthenticated = signal(!!this.getToken());
+  public isAuthenticated = signal(false);
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(private api: ApiService, private router: Router) {
+    // Best-effort session restore (cookie-based).
+    if (typeof window !== 'undefined') {
+      this.refreshSession().subscribe();
+    }
+  }
 
   login(email: string, password: string): Observable<any> {
     return this.api.login(email, password).pipe(
       tap(response => {
-        this.setSession(response.token, response.user);
         this.userSubject.next(response.user);
         this.isAuthenticated.set(true);
       })
@@ -28,7 +33,6 @@ export class AuthService {
   signup(name: string, email: string, password: string): Observable<any> {
     return this.api.signup(name, email, password).pipe(
       tap(response => {
-        this.setSession(response.token, response.user);
         this.userSubject.next(response.user);
         this.isAuthenticated.set(true);
       })
@@ -36,32 +40,41 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.userSubject.next(null);
-    this.isAuthenticated.set(false);
-    this.router.navigate(['/']);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('token');
+    this.api.logout().subscribe({
+      next: () => {
+        this.userSubject.next(null);
+        this.isAuthenticated.set(false);
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        // Even if the server call fails, clear local state.
+        this.userSubject.next(null);
+        this.isAuthenticated.set(false);
+        this.router.navigate(['/']);
+      }
+    });
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return !!this.userSubject.value;
   }
 
   getUser(): User | null {
     return this.userSubject.value;
   }
 
-  private setSession(token: string, user: User): void {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-  }
-
-  private getUserFromStorage(): User | null {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+  refreshSession(): Observable<boolean> {
+    return this.api.me().pipe(
+      tap(({ user }) => {
+        this.userSubject.next(user);
+        this.isAuthenticated.set(true);
+      }),
+      map(() => true),
+      catchError(() => {
+        this.userSubject.next(null);
+        this.isAuthenticated.set(false);
+        return of(false);
+      })
+    );
   }
 }

@@ -17,7 +17,6 @@ export interface Movie {
 }
 
 export interface AuthResponse {
-  token: string;
   user: User;
 }
 

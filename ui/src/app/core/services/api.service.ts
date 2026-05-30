@@ -19,6 +19,14 @@ export class ApiService {
     return this.http.post<AuthResponse>(`${this.baseUrl}/auth/signup`, { name, email, password });
   }
 
+  me(): Observable<AuthResponse> {
+    return this.http.get<AuthResponse>(`${this.baseUrl}/auth/me`);
+  }
+
+  logout(): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/auth/logout`, {});
+  }
+
   getMovies(search?: string, genre?: string): Observable<Movie[]> {
     let url = `${this.baseUrl}/movies`;
     const params = new URLSearchParams();
