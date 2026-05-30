@@ -46,12 +46,12 @@ export class BrowseComponent implements OnInit {
     this.api.getMovies(search, genre).subscribe({
       next: (movies) => {
         this.movies$.next(movies);
-        this.loading = false;
       },
       error: (err) => {
-        this.loading = false;
         this.toast.error('Failed to load movies');
       }
     });
+
+    this.loading = false;
   }
 }
