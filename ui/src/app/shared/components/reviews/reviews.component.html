@@ -1,0 +1,149 @@
+<section class="reviews-section">
+  <div class="reviews-header">
+    <h2>Reviews</h2>
+    @if (reviews().length) {
+      <div class="rating-summary">
+        <span class="avg-stars">
+          @for (s of stars; track s) {
+            <span class="star" [class.filled]="s <= averageRating()">★</span>
+          }
+        </span>
+        <span class="avg-label">{{ averageRating().toFixed(1) }} / 5 · {{ reviews().length }} {{ reviews().length === 1 ? 'review' : 'reviews' }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Create form — only shown when the user has no review yet -->
+  @if (auth.isAuthenticated() && !userReview()) {
+    <div class="review-form-card">
+      <h3>Write a Review</h3>
+
+      <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+        <div class="star-picker">
+          @for (s of stars; track s) {
+            <button
+              type="button"
+              class="star-btn"
+              [class.filled]="s <= ratingDisplay()"
+              (mouseenter)="hoverRating.set(s)"
+              (mouseleave)="hoverRating.set(0)"
+              (click)="setRating(s)"
+              [attr.aria-label]="starLabel[s]"
+            >★</button>
+          }
+          @if (ratingControl.value) {
+            <span class="star-label">{{ starLabel[ratingControl.value] }}</span>
+          }
+        </div>
+
+        @if (ratingControl.invalid && ratingControl.touched) {
+          <p class="field-error">Please select a star rating.</p>
+        }
+
+        <textarea
+          formControlName="comment"
+          placeholder="Share your thoughts about this movie… (10–500 characters)"
+          rows="4"
+        ></textarea>
+
+        @if (commentControl.errors?.['minlength'] && commentControl.touched) {
+          <p class="field-error">Comment must be at least 10 characters.</p>
+        }
+        @if (commentControl.errors?.['maxlength'] && commentControl.touched) {
+          <p class="field-error">Comment must be 500 characters or fewer.</p>
+        }
+
+        <div class="form-actions">
+          <button type="submit" class="btn-submit" [disabled]="reviewForm.invalid || submitting()">
+            {{ submitting() ? 'Saving…' : 'Submit Review' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <div class="reviews-list">
+    @if (!reviews().length) {
+      <p class="empty-state">No reviews yet. Be the first to share your thoughts!</p>
+    }
+
+    @for (review of reviews(); track review.id) {
+      <div class="review-card" [class.own]="review.userId === currentUser()?.id">
+
+        <!-- Inline edit form — replaces card content when editing -->
+        @if (review.userId === currentUser()?.id && isEditing()) {
+          <p class="edit-heading">Editing your review</p>
+
+          <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+            <div class="star-picker">
+              @for (s of stars; track s) {
+                <button
+                  type="button"
+                  class="star-btn"
+                  [class.filled]="s <= ratingDisplay()"
+                  (mouseenter)="hoverRating.set(s)"
+                  (mouseleave)="hoverRating.set(0)"
+                  (click)="setRating(s)"
+                  [attr.aria-label]="starLabel[s]"
+                >★</button>
+              }
+              @if (ratingControl.value) {
+                <span class="star-label">{{ starLabel[ratingControl.value] }}</span>
+              }
+            </div>
+
+            @if (ratingControl.invalid && ratingControl.touched) {
+              <p class="field-error">Please select a star rating.</p>
+            }
+
+            <textarea
+              formControlName="comment"
+              placeholder="Share your thoughts… (10–500 characters)"
+              rows="4"
+            ></textarea>
+
+            @if (commentControl.errors?.['minlength'] && commentControl.touched) {
+              <p class="field-error">Comment must be at least 10 characters.</p>
+            }
+            @if (commentControl.errors?.['maxlength'] && commentControl.touched) {
+              <p class="field-error">Comment must be 500 characters or fewer.</p>
+            }
+
+            <div class="form-actions">
+              <button type="submit" class="btn-submit" [disabled]="reviewForm.invalid || submitting()">
+                {{ submitting() ? 'Saving…' : 'Save Changes' }}
+              </button>
+              <button type="button" class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+              <button type="button" class="btn-delete" (click)="confirmDelete()">Delete</button>
+            </div>
+          </form>
+
+        } @else {
+          <!-- Normal read view -->
+          <div class="review-top">
+            <div class="reviewer-info">
+              <span class="reviewer-name">{{ review.userName }}</span>
+              <div class="review-stars">
+                @for (s of stars; track s) {
+                  <span class="star" [class.filled]="s <= review.rating">★</span>
+                }
+              </div>
+            </div>
+
+            <div class="review-meta">
+              @if (review.userId === currentUser()?.id) {
+                <div class="card-actions">
+                  <button class="btn-card-action" (click)="startEdit()">Edit</button>
+                  <button class="btn-card-action btn-card-delete" (click)="confirmDelete()">Delete</button>
+                </div>
+              }
+              <span class="review-date">{{ review.createdAt | date: 'MMM d, y' }}</span>
+            </div>
+          </div>
+          <p class="review-comment">{{ review.comment }}</p>
+        }
+
+      </div>
+    }
+  </div>
+</section>

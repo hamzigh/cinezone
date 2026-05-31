@@ -4,12 +4,13 @@ import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Movie } from '../../core/models/models';
 import { LoadingSkeletonComponent } from '../../shared/components/loading-skeleton/loading-skeleton.component';
+import { ReviewsComponent } from '../../shared/components/reviews/reviews.component';
 import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-movie-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoadingSkeletonComponent],
+  imports: [CommonModule, RouterModule, LoadingSkeletonComponent, ReviewsComponent],
   templateUrl: './movie-detail.component.html',
   styleUrl: './movie-detail.component.scss'
 })

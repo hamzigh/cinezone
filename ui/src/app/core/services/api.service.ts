@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthResponse, Movie, StreamResponse } from '../models/models';
+import { AuthResponse, Movie, Review, StreamResponse } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -72,5 +72,21 @@ export class ApiService {
 
   deleteAccount(password: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/auth/account`, { body: { password } });
+  }
+
+  getReviews(movieId: string): Observable<Review[]> {
+    return this.http.get<Review[]>(`${this.baseUrl}/reviews?movieId=${encodeURIComponent(movieId)}`);
+  }
+
+  createReview(movieId: string, data: { rating: number; comment: string }): Observable<Review> {
+    return this.http.post<Review>(`${this.baseUrl}/reviews`, { movieId, ...data });
+  }
+
+  updateReview(id: number, data: { rating: number; comment: string }): Observable<Review> {
+    return this.http.put<Review>(`${this.baseUrl}/reviews/${id}`, data);
+  }
+
+  deleteReview(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/reviews/${id}`);
   }
 }

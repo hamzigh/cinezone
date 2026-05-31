@@ -18,6 +18,17 @@ export interface Movie {
   type?: 'movie' | 'tv';
 }
 
+export interface Review {
+  id: number;
+  movieId: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AuthResponse {
   user: User;
 }
