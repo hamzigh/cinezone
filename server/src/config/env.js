@@ -10,7 +10,7 @@ module.exports = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:4200',
   vidapiBaseUrl: process.env.VIDAPI_BASE_URL || 'https://vidapi.ru',
-  vidapiPlayerBaseUrl: process.env.VIDAPI_PLAYER_BASE_URL || 'https://vaplayer.ru',
+  vidapiPlayerBaseUrl: process.env.VIDAPI_PLAYER_BASE_URL || 'https://vidsrc-embed.ru',
   imdb: {
     apiKey: process.env.IMDB_API_KEY || '',
     dataSetId: process.env.IMDB_DATA_SET_ID || '',

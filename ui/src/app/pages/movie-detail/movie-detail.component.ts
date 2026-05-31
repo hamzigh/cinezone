@@ -28,6 +28,7 @@ export class MovieDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadMovie(id);
+      this.loadWatchlistStatus(id);
     }
   }
 
@@ -39,6 +40,15 @@ export class MovieDetailComponent implements OnInit {
       error: () => {
         this.toast.error('Failed to load movie');
       }
+    });
+  }
+
+  private loadWatchlistStatus(id: string): void {
+    this.api.getWatchlist().subscribe({
+      next: (movies) => {
+        this.isInWatchlist.set(movies.some(m => m.id === id));
+      },
+      error: () => {}
     });
   }
 

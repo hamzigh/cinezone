@@ -43,6 +43,8 @@ function mapTitle(title) {
   const image = title.primaryImage?.url || '';
   const genres = title.genres?.genres || [];
   const cast = title.credits?.edges || [];
+  const tvTypes = ['tvSeries', 'tvMiniSeries'];
+  const type = tvTypes.includes(title.titleType?.id) ? 'tv' : 'movie';
 
   return {
     id: title.id,
@@ -56,7 +58,8 @@ function mapTitle(title) {
     cast: cast
       .map((edge) => edge.node?.name?.nameText?.text)
       .filter(Boolean)
-      .slice(0, 8)
+      .slice(0, 8),
+    type
   };
 }
 
@@ -70,17 +73,17 @@ async function searchMovies(search, genre) {
 
   const query = `
     query {
-      mainSearch(first: 24, options: {
+      mainSearch(first: 48, options: {
         searchTerm: ${safeSearch},
         isExactMatch: false,
-        type: TITLE,
-        titleSearchOptions: { type: MOVIE }
+        type: TITLE
       }) {
         edges {
           node {
             entity {
               ... on Title {
                 id
+                titleType { id }
                 titleText { text }
                 originalTitleText { text }
                 releaseYear { year }
@@ -118,6 +121,7 @@ async function getMovie(id) {
     query {
       title(id: ${JSON.stringify(id)}) {
         id
+        titleType { id }
         titleText { text }
         originalTitleText { text }
         releaseYear { year }

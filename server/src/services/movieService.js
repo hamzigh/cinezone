@@ -56,8 +56,11 @@ async function getMovie(id) {
 }
 
 async function getStream(id) {
-  await getMovie(id);
-  return { url: vidapiService.getMovieEmbedUrl(id) };
+  const item = await getMovie(id);
+  const url = item.type === 'tv'
+    ? vidapiService.getTVEmbedUrl(id)
+    : vidapiService.getMovieEmbedUrl(id);
+  return { url };
 }
 
 module.exports = {

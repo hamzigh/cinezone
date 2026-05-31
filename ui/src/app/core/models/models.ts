@@ -2,6 +2,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  preferredGenres?: string[];
 }
 
 export interface Movie {
@@ -14,6 +15,7 @@ export interface Movie {
   backdropUrl: string;
   description: string;
   cast: string[];
+  type?: 'movie' | 'tv';
 }
 
 export interface AuthResponse {

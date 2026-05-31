@@ -63,6 +63,17 @@ export class AuthService {
     return this.userSubject.value;
   }
 
+  setUser(user: User): void {
+    this.userSubject.next(user);
+    this.isAuthenticated.set(true);
+  }
+
+  clearSession(): void {
+    this.userSubject.next(null);
+    this.isAuthenticated.set(false);
+    this.api.logout().subscribe();
+  }
+
   refreshSession(): Observable<boolean> {
     return this.api.me().pipe(
       tap(({ user }) => {

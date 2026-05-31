@@ -12,6 +12,7 @@
     <div class="navbar-user">
       <div *ngIf="(authService.user$ | async) as user" class="user-menu">
         <span class="user-name">{{ user.name }}</span>
+        <a routerLink="/profile" class="nav-link">Profile</a>
         <button (click)="logout()" class="btn btn-text">Logout</button>
       </div>
     </div>

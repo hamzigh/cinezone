@@ -71,4 +71,62 @@ async function login({ email, password }) {
   return { token: signUser(user), user };
 }
 
-module.exports = { signup, login };
+async function getProfile(id) {
+  const result = await pool.query(
+    'SELECT id, name, email, preferred_genres FROM users WHERE id = $1',
+    [id]
+  );
+  const row = result.rows[0];
+  if (!row) throw new HttpError(404, 'User not found');
+  return { id: row.id, name: row.name, email: row.email, preferredGenres: row.preferred_genres || [] };
+}
+
+async function updateProfile(id, { name, email }) {
+  const cleanName = String(name || '').trim();
+  const cleanEmail = String(email || '').trim().toLowerCase();
+  if (!cleanName || !cleanEmail) throw new HttpError(400, 'Name and email are required');
+
+  try {
+    const result = await pool.query(
+      'UPDATE users SET name = $1, email = $2, updated_at = now() WHERE id = $3 RETURNING id, name, email',
+      [cleanName, cleanEmail, id]
+    );
+    if (!result.rows[0]) throw new HttpError(404, 'User not found');
+    return toPublicUser(result.rows[0]);
+  } catch (err) {
+    if (err.code === '23505') throw new HttpError(409, 'That email is already in use');
+    throw err;
+  }
+}
+
+async function changePassword(id, { currentPassword, newPassword }) {
+  const result = await pool.query('SELECT password_hash FROM users WHERE id = $1', [id]);
+  const row = result.rows[0];
+  if (!row) throw new HttpError(404, 'User not found');
+
+  const isValid = await bcrypt.compare(currentPassword, row.password_hash);
+  if (!isValid) throw new HttpError(401, 'Current password is incorrect');
+
+  if (String(newPassword).length < 6) throw new HttpError(400, 'New password must be at least 6 characters');
+
+  const newHash = await bcrypt.hash(newPassword, 12);
+  await pool.query('UPDATE users SET password_hash = $1, updated_at = now() WHERE id = $2', [newHash, id]);
+}
+
+async function updatePreferences(id, preferredGenres) {
+  const genres = Array.isArray(preferredGenres) ? preferredGenres : [];
+  await pool.query('UPDATE users SET preferred_genres = $1, updated_at = now() WHERE id = $2', [genres, id]);
+}
+
+async function deleteAccount(id, password) {
+  const result = await pool.query('SELECT password_hash FROM users WHERE id = $1', [id]);
+  const row = result.rows[0];
+  if (!row) throw new HttpError(404, 'User not found');
+
+  const isValid = await bcrypt.compare(password, row.password_hash);
+  if (!isValid) throw new HttpError(401, 'Incorrect password');
+
+  await pool.query('DELETE FROM users WHERE id = $1', [id]);
+}
+
+module.exports = { signup, login, getProfile, updateProfile, changePassword, updatePreferences, deleteAccount };

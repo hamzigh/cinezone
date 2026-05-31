@@ -57,4 +57,20 @@ export class ApiService {
   removeFromWatchlist(movieId: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/watchlist/${movieId}`);
   }
+
+  updateProfile(data: { name: string; email: string }): Observable<AuthResponse> {
+    return this.http.put<AuthResponse>(`${this.baseUrl}/auth/profile`, data);
+  }
+
+  changePassword(data: { currentPassword: string; newPassword: string }): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/auth/password`, data);
+  }
+
+  updatePreferences(preferredGenres: string[]): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/auth/preferences`, { preferredGenres });
+  }
+
+  deleteAccount(password: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/auth/account`, { body: { password } });
+  }
 }

@@ -1,0 +1,82 @@
+<div class="profile-page">
+  <div class="container">
+    <div class="profile-header">
+      <h1>Account Settings</h1>
+    </div>
+
+    <!-- Profile Info -->
+    <section class="settings-section">
+      <h2>Profile</h2>
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input id="name" type="text" formControlName="name" class="form-input" placeholder="Your name" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" class="form-input" placeholder="your@email.com" />
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || savingProfile()">
+          {{ savingProfile() ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </form>
+    </section>
+
+    <!-- Change Password -->
+    <section class="settings-section">
+      <h2>Change Password</h2>
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+        <div class="form-group">
+          <label for="currentPassword">Current Password</label>
+          <input id="currentPassword" type="password" formControlName="currentPassword" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input id="newPassword" type="password" formControlName="newPassword" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" class="form-input" />
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="passwordForm.invalid || savingPassword()">
+          {{ savingPassword() ? 'Saving...' : 'Change Password' }}
+        </button>
+      </form>
+    </section>
+
+    <!-- Content Preferences -->
+    <section class="settings-section">
+      <h2>Content Preferences</h2>
+      <p class="section-description">Select the genres you enjoy most.</p>
+      <div class="genre-grid">
+        <button
+          *ngFor="let genre of genres"
+          type="button"
+          class="genre-chip"
+          [class.active]="preferredGenres().includes(genre)"
+          (click)="toggleGenre(genre)"
+        >
+          {{ genre }}
+        </button>
+      </div>
+      <button type="button" class="btn btn-primary" [disabled]="savingPreferences()" (click)="savePreferences()">
+        {{ savingPreferences() ? 'Saving...' : 'Save Preferences' }}
+      </button>
+    </section>
+
+    <!-- Danger Zone -->
+    <section class="settings-section danger-zone">
+      <h2>Danger Zone</h2>
+      <p class="section-description">Deleting your account is permanent. All your data and watchlist will be removed.</p>
+      <form [formGroup]="deleteForm" (ngSubmit)="deleteAccount()">
+        <div class="form-group">
+          <label for="deletePassword">Enter your password to confirm</label>
+          <input id="deletePassword" type="password" formControlName="password" class="form-input" placeholder="Your password" />
+        </div>
+        <button type="submit" class="btn btn-danger" [disabled]="deleteForm.invalid || deletingAccount()">
+          {{ deletingAccount() ? 'Deleting...' : 'Delete My Account' }}
+        </button>
+      </form>
+    </section>
+  </div>
+</div>

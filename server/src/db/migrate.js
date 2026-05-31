@@ -13,6 +13,8 @@ async function migrate() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
     );
 
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS preferred_genres TEXT[] DEFAULT '{}';
+
     CREATE TABLE IF NOT EXISTS watchlist (
       user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       movie_id TEXT NOT NULL,
