@@ -34,9 +34,9 @@
         <button
           type="submit"
           class="btn btn-primary btn-block"
-          [disabled]="!loginForm.valid || loading"
+          [disabled]="!loginForm.valid || loading()"
         >
-          {{ loading ? 'Signing In...' : 'Sign In' }}
+          {{ loading() ? 'Signing In...' : 'Sign In' }}
         </button>
       </form>
 

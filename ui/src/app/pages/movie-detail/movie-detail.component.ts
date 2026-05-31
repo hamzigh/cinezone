@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
@@ -14,8 +14,8 @@ import { ToastService } from '../../core/services/toast.service';
   styleUrl: './movie-detail.component.scss'
 })
 export class MovieDetailComponent implements OnInit {
-  movie: Movie | null = null;
-  isInWatchlist = false;
+  movie = signal<Movie | null>(null);
+  isInWatchlist = signal(false);
 
   constructor(
     private route: ActivatedRoute,
@@ -34,7 +34,7 @@ export class MovieDetailComponent implements OnInit {
   private loadMovie(id: string): void {
     this.api.getMovie(id).subscribe({
       next: (movie) => {
-        this.movie = movie;
+        this.movie.set(movie);
       },
       error: () => {
         this.toast.error('Failed to load movie');
@@ -43,18 +43,18 @@ export class MovieDetailComponent implements OnInit {
   }
 
   watchNow(): void {
-    if (this.movie) {
-      this.router.navigate(['/watch', this.movie.id]);
+    if (this.movie()) {
+      this.router.navigate(['/watch', this.movie()!.id]);
     }
   }
 
   toggleWatchlist(): void {
-    if (!this.movie) return;
+    if (!this.movie()) return;
 
-    if (this.isInWatchlist) {
-      this.api.removeFromWatchlist(this.movie.id).subscribe({
+    if (this.isInWatchlist()) {
+      this.api.removeFromWatchlist(this.movie()!.id).subscribe({
         next: () => {
-          this.isInWatchlist = false;
+          this.isInWatchlist.set(false);
           this.toast.success('Removed from watchlist');
         },
         error: () => {
@@ -62,9 +62,9 @@ export class MovieDetailComponent implements OnInit {
         }
       });
     } else {
-      this.api.addToWatchlist(this.movie.id).subscribe({
+      this.api.addToWatchlist(this.movie()!.id).subscribe({
         next: () => {
-          this.isInWatchlist = true;
+          this.isInWatchlist.set(true);
           this.toast.success('Added to watchlist');
         },
         error: () => {

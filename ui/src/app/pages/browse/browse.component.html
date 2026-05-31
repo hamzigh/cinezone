@@ -24,14 +24,14 @@
       </div>
     </div>
 
-    <div *ngIf="loading; else movieGrid" class="loading">
+    <div *ngIf="loading(); else movieGrid" class="loading">
       <app-loading-skeleton type="grid"></app-loading-skeleton>
     </div>
 
     <ng-template #movieGrid>
       <div class="movies-grid">
         <a
-          *ngFor="let movie of movies$ | async"
+          *ngFor="let movie of movies()"
           [routerLink]="['/movie', movie.id]"
           class="movie-link"
         >
@@ -39,7 +39,7 @@
         </a>
       </div>
 
-      <div *ngIf="(movies$ | async)?.length === 0" class="no-results">
+      <div *ngIf="movies().length === 0" class="no-results">
         <p>No movies found. Try a different search or genre.</p>
       </div>
     </ng-template>

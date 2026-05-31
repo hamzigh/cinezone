@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
@@ -15,8 +15,8 @@ import { ToastService } from '../../core/services/toast.service';
   styleUrl: './watchlist.component.scss'
 })
 export class WatchlistComponent implements OnInit {
-  movies: Movie[] = [];
-  loading = false;
+  movies = signal<Movie[]>([]);
+  loading = signal(false);
 
   constructor(private api: ApiService, private toast: ToastService) {}
 
@@ -25,14 +25,14 @@ export class WatchlistComponent implements OnInit {
   }
 
   private loadWatchlist(): void {
-    this.loading = true;
+    this.loading.set(true);
     this.api.getWatchlist().subscribe({
       next: (movies) => {
-        this.movies = movies;
-        this.loading = false;
+        this.movies.set(movies);
+        this.loading.set(false);
       },
       error: () => {
-        this.loading = false;
+        this.loading.set(false);
         this.toast.error('Failed to load watchlist');
       }
     });
@@ -41,7 +41,7 @@ export class WatchlistComponent implements OnInit {
   removeFromWatchlist(movieId: string): void {
     this.api.removeFromWatchlist(movieId).subscribe({
       next: () => {
-        this.movies = this.movies.filter(m => m.id !== movieId);
+        this.movies.set(this.movies().filter(m => m.id !== movieId));
         this.toast.success('Removed from watchlist');
       },
       error: () => {

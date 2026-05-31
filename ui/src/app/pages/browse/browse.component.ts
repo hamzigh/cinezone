@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../../core/services/api.service';
 import { Movie } from '../../core/models/models';
 import { MovieCardComponent } from '../../shared/components/movie-card/movie-card.component';
@@ -18,11 +17,11 @@ import { ToastService } from '../../core/services/toast.service';
   styleUrl: './browse.component.scss'
 })
 export class BrowseComponent implements OnInit {
-  movies$ = new BehaviorSubject<Movie[]>([]);
+  movies = signal<Movie[]>([]);
   searchControl = new FormControl('');
   selectedGenre = 'All';
   genres = ['All', 'Action', 'Comedy', 'Drama', 'Sci-Fi', 'Horror', 'Thriller', 'Animation'];
-  loading = false;
+  loading = signal(false);
 
   constructor(private api: ApiService, private toast: ToastService) {}
 
@@ -39,19 +38,19 @@ export class BrowseComponent implements OnInit {
   }
 
   private loadMovies(): void {
-    this.loading = true;
+    this.loading.set(true);
     const search = this.searchControl.value || undefined;
     const genre = this.selectedGenre === 'All' ? undefined : this.selectedGenre;
 
     this.api.getMovies(search, genre).subscribe({
       next: (movies) => {
-        this.movies$.next(movies);
+        this.movies.set(movies);
+        this.loading.set(false);
       },
       error: (err) => {
         this.toast.error('Failed to load movies');
+        this.loading.set(false);
       }
     });
-
-    this.loading = false;
   }
 }

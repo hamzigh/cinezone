@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -14,8 +14,8 @@ import { ToastService } from '../../core/services/toast.service';
   styleUrl: './watch.component.scss'
 })
 export class WatchComponent implements OnInit {
-  streamUrl: string | null = null;
-  loading = false;
+  streamUrl = signal<string | null>(null);
+  loading = signal(false);
 
   constructor(
     private route: ActivatedRoute,
@@ -32,14 +32,14 @@ export class WatchComponent implements OnInit {
   }
 
   private loadStream(id: string): void {
-    this.loading = true;
+    this.loading.set(true);
     this.api.getStream(id).subscribe({
       next: (response) => {
-        this.streamUrl = response.url;
-        this.loading = false;
+        this.streamUrl.set(response.url);
+        this.loading.set(false);
       },
       error: () => {
-        this.loading = false;
+        this.loading.set(false);
         this.toast.error('Failed to load video stream');
       }
     });

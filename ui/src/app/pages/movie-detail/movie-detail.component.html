@@ -1,8 +1,8 @@
 <div class="detail-page">
-  <ng-container *ngIf="movie; else loading">
+  <ng-container *ngIf="movie(); else loading">
     <div
       class="backdrop"
-      [style.backgroundImage]="'url(' + movie.backdropUrl + ')'"
+      [style.backgroundImage]="'url(' + movie()!.backdropUrl + ')'"
     >
       <div class="backdrop-overlay"></div>
     </div>
@@ -12,26 +12,26 @@
 
       <div class="detail-grid">
         <div class="poster-section">
-          <img [src]="movie.posterUrl" [alt]="movie.title" class="poster" />
+          <img [src]="movie()!.posterUrl" [alt]="movie()!.title" class="poster" />
         </div>
 
         <div class="info-section">
-          <h1 class="title">{{ movie.title }}</h1>
+          <h1 class="title">{{ movie()!.title }}</h1>
 
           <div class="metadata">
-            <span class="year">{{ movie.year }}</span>
+            <span class="year">{{ movie()!.year }}</span>
             <span class="rating">
-              <span class="star">★</span>{{ movie.rating }}/10
+              <span class="star">★</span>{{ movie()!.rating }}/10
             </span>
-            <span class="genre">{{ movie.genre }}</span>
+            <span class="genre">{{ movie()!.genre }}</span>
           </div>
 
-          <p class="description">{{ movie.description }}</p>
+          <p class="description">{{ movie()!.description }}</p>
 
           <div class="cast-section">
             <h3>Cast</h3>
             <div class="cast-list">
-              <span *ngFor="let actor of movie.cast" class="cast-member">
+              <span *ngFor="let actor of movie()!.cast" class="cast-member">
                 {{ actor }}
               </span>
             </div>
@@ -43,10 +43,10 @@
             </button>
             <button
               (click)="toggleWatchlist()"
-              [class.added]="isInWatchlist"
+              [class.added]="isInWatchlist()"
               class="btn btn-secondary"
             >
-              {{ isInWatchlist ? '✓ In Watchlist' : '＋ Add to Watchlist' }}
+              {{ isInWatchlist() ? '✓ In Watchlist' : '＋ Add to Watchlist' }}
             </button>
           </div>
         </div>

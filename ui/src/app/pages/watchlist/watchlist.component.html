@@ -2,14 +2,14 @@
   <div class="container">
     <h1>My Watchlist</h1>
 
-    <div *ngIf="loading; else watchlistContent" class="loading">
+    <div *ngIf="loading(); else watchlistContent" class="loading">
       <app-loading-skeleton type="grid"></app-loading-skeleton>
     </div>
 
     <ng-template #watchlistContent>
       <div class="movies-grid">
         <a
-          *ngFor="let movie of movies"
+          *ngFor="let movie of movies()"
           [routerLink]="['/movie', movie.id]"
           class="movie-link"
         >
@@ -22,7 +22,7 @@
         </a>
       </div>
 
-      <div *ngIf="movies.length === 0" class="empty-state">
+      <div *ngIf="movies().length === 0" class="empty-state">
         <div class="empty-icon">📽️</div>
         <h2>Your watchlist is empty</h2>
         <p>Add movies to your watchlist to watch them later</p>

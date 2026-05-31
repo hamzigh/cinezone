@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
@@ -14,7 +14,7 @@ import { ToastService } from '../../core/services/toast.service';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  loading = false;
+  loading = signal(false);
 
   constructor(
     private fb: FormBuilder,
@@ -35,7 +35,7 @@ export class LoginComponent {
   onSubmit(): void {
     if (!this.loginForm.valid) return;
 
-    this.loading = true;
+    this.loading.set(true);
     const { email, password } = this.loginForm.value;
 
     this.authService.login(email, password).subscribe({
@@ -44,7 +44,7 @@ export class LoginComponent {
         this.router.navigate(['/browse']);
       },
       error: (err) => {
-        this.loading = false;
+        this.loading.set(false);
         this.toast.error(err.error?.message || 'Sign in failed');
       }
     });
