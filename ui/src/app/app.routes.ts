@@ -9,6 +9,8 @@ import { MovieDetailComponent } from './pages/movie-detail/movie-detail.componen
 import { WatchComponent } from './pages/watch/watch.component';
 import { WatchlistComponent } from './pages/watchlist/watchlist.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { CollectionsComponent } from './pages/collections/collections.component';
+import { CollectionDetailComponent } from './pages/collection-detail/collection-detail.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -19,5 +21,7 @@ export const routes: Routes = [
   { path: 'watch/:id', component: WatchComponent, canActivate: [authGuard] },
   { path: 'watchlist', component: WatchlistComponent, canActivate: [authGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  { path: 'collections', component: CollectionsComponent, canActivate: [authGuard] },
+  { path: 'collections/:id', component: CollectionDetailComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' }
 ];

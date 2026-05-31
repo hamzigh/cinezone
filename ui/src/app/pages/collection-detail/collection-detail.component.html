@@ -1,0 +1,60 @@
+<div class="detail-page">
+  <div class="container">
+    <button class="back-btn" routerLink="/collections">← Collections</button>
+
+    @if (collection(); as col) {
+      <div class="collection-header">
+        @if (isRenaming()) {
+          <div class="rename-row">
+            <input
+              type="text"
+              class="rename-input"
+              [formControl]="renameControl"
+              (keydown.enter)="saveRename()"
+              (keydown.escape)="cancelRename()"
+              maxlength="100"
+            />
+            <button class="btn-sm btn-save" (click)="saveRename()" [disabled]="renameControl.invalid">Save</button>
+            <button class="btn-sm btn-cancel" (click)="cancelRename()">Cancel</button>
+          </div>
+        } @else {
+          <div class="title-row">
+            <h1 class="col-title">{{ col.name }}</h1>
+            <button class="btn-sm" (click)="startRename()">Rename</button>
+          </div>
+        }
+        <p class="col-meta">{{ col.itemCount }} {{ col.itemCount === 1 ? 'movie' : 'movies' }}</p>
+      </div>
+
+      @if (!col.items.length) {
+        <div class="empty-state">
+          <p>This collection is empty.</p>
+          <p class="empty-hint">Open a movie and use "Add to Collection" to add movies here.</p>
+        </div>
+      } @else {
+        <div class="items-grid">
+          @for (item of col.items; track item.movieId) {
+            <div class="item-card">
+              <div class="item-poster" (click)="navigateToMovie(item.movieId)">
+                @if (item.moviePosterUrl) {
+                  <img [src]="item.moviePosterUrl" [alt]="item.movieTitle" loading="lazy" />
+                } @else {
+                  <div class="poster-placeholder">🎬</div>
+                }
+                <div class="poster-overlay">
+                  <span class="play-hint">▶</span>
+                </div>
+              </div>
+              <div class="item-info">
+                <p class="item-title" (click)="navigateToMovie(item.movieId)">{{ item.movieTitle }}</p>
+                <button class="btn-remove" (click)="removeItem(item.movieId)">✕ Remove</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    } @else {
+      <p class="loading-text">Loading collection…</p>
+    }
+  </div>
+</div>

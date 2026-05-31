@@ -29,6 +29,27 @@ export interface Review {
   updatedAt: string;
 }
 
+export interface Collection {
+  id: number;
+  userId: string;
+  name: string;
+  itemCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CollectionItem {
+  collectionId: number;
+  movieId: string;
+  movieTitle: string;
+  moviePosterUrl: string;
+  addedAt: string;
+}
+
+export interface CollectionDetail extends Collection {
+  items: CollectionItem[];
+}
+
 export interface AuthResponse {
   user: User;
 }

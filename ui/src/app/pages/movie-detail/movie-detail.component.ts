@@ -5,12 +5,13 @@ import { ApiService } from '../../core/services/api.service';
 import { Movie } from '../../core/models/models';
 import { LoadingSkeletonComponent } from '../../shared/components/loading-skeleton/loading-skeleton.component';
 import { ReviewsComponent } from '../../shared/components/reviews/reviews.component';
+import { AddToCollectionComponent } from '../../shared/components/add-to-collection/add-to-collection.component';
 import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-movie-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoadingSkeletonComponent, ReviewsComponent],
+  imports: [CommonModule, RouterModule, LoadingSkeletonComponent, ReviewsComponent, AddToCollectionComponent],
   templateUrl: './movie-detail.component.html',
   styleUrl: './movie-detail.component.scss'
 })

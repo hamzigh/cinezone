@@ -1,0 +1,66 @@
+<div class="collections-page">
+  <div class="container">
+    <div class="page-header">
+      <h1>My Collections</h1>
+      <p class="sub">Group your favourite movies into personal playlists.</p>
+    </div>
+
+    <div class="create-bar">
+      <input
+        type="text"
+        [formControl]="createControl"
+        placeholder="New collection name…"
+        (keydown.enter)="create()"
+        maxlength="100"
+        class="create-input"
+      />
+      <button class="btn-create" (click)="create()" [disabled]="createControl.invalid || creating()">
+        {{ creating() ? 'Creating…' : '+ Create' }}
+      </button>
+    </div>
+
+    @if (loading()) {
+      <p class="status-text">Loading…</p>
+    } @else if (!collections().length) {
+      <div class="empty-state">
+        <div class="empty-icon">🎬</div>
+        <p>No collections yet.</p>
+        <p class="empty-hint">Create one above to start curating your movies.</p>
+      </div>
+    } @else {
+      <div class="collections-grid">
+        @for (col of collections(); track col.id) {
+          <div class="collection-card">
+            <div class="card-main" (click)="view(col.id)">
+              @if (editingId() === col.id) {
+                <input
+                  type="text"
+                  class="rename-input"
+                  [formControl]="renameControl"
+                  (keydown.enter)="saveRename(col.id)"
+                  (keydown.escape)="cancelRename()"
+                  (click)="$event.stopPropagation()"
+                  maxlength="100"
+                />
+              } @else {
+                <h3 class="col-name">{{ col.name }}</h3>
+              }
+              <span class="col-count">{{ col.itemCount }} {{ col.itemCount === 1 ? 'movie' : 'movies' }}</span>
+            </div>
+
+            <div class="card-actions">
+              @if (editingId() === col.id) {
+                <button class="btn-action btn-save" (click)="saveRename(col.id)" [disabled]="renameControl.invalid">Save</button>
+                <button class="btn-action btn-cancel" (click)="cancelRename()">Cancel</button>
+              } @else {
+                <button class="btn-action" (click)="view(col.id)">View</button>
+                <button class="btn-action" (click)="startRename(col)">Rename</button>
+                <button class="btn-action btn-danger" (click)="$event.stopPropagation(); delete(col.id)">Delete</button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

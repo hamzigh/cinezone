@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthResponse, Movie, Review, StreamResponse } from '../models/models';
+import { AuthResponse, Collection, CollectionDetail, Movie, Review, StreamResponse } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -88,5 +88,37 @@ export class ApiService {
 
   deleteReview(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/reviews/${id}`);
+  }
+
+  getCollections(): Observable<Collection[]> {
+    return this.http.get<Collection[]>(`${this.baseUrl}/collections`);
+  }
+
+  getCollection(id: number): Observable<CollectionDetail> {
+    return this.http.get<CollectionDetail>(`${this.baseUrl}/collections/${id}`);
+  }
+
+  getCollectionsContaining(movieId: string): Observable<number[]> {
+    return this.http.get<number[]>(`${this.baseUrl}/collections/containing?movieId=${encodeURIComponent(movieId)}`);
+  }
+
+  createCollection(name: string): Observable<Collection> {
+    return this.http.post<Collection>(`${this.baseUrl}/collections`, { name });
+  }
+
+  renameCollection(id: number, name: string): Observable<Collection> {
+    return this.http.patch<Collection>(`${this.baseUrl}/collections/${id}`, { name });
+  }
+
+  deleteCollection(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/collections/${id}`);
+  }
+
+  addToCollection(id: number, item: { movieId: string; movieTitle: string; moviePosterUrl: string }): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/collections/${id}/items`, item);
+  }
+
+  removeFromCollection(id: number, movieId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/collections/${id}/items/${encodeURIComponent(movieId)}`);
   }
 }

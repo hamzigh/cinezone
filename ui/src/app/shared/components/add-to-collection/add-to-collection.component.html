@@ -1,0 +1,46 @@
+<div class="atc-wrapper">
+  <button class="btn-atc" (click)="toggleOpen($event)">
+    ＋ Collection
+  </button>
+
+  @if (isOpen()) {
+    <div class="atc-dropdown" (click)="$event.stopPropagation()">
+      <p class="dropdown-title">Save to collection</p>
+
+      @if (!collections().length) {
+        <p class="dropdown-empty">No collections yet.</p>
+      } @else {
+        <ul class="collection-list">
+          @for (col of collections(); track col.id) {
+            <li
+              class="collection-item"
+              [class.active]="contains(col.id)"
+              (click)="toggleCollection($event, col)"
+            >
+              <span class="check">{{ contains(col.id) ? '✓' : '' }}</span>
+              <span class="col-name">{{ col.name }}</span>
+              <span class="col-count">{{ col.itemCount }}</span>
+            </li>
+          }
+        </ul>
+      }
+
+      <div class="new-col-row">
+        <input
+          type="text"
+          [formControl]="newNameControl"
+          placeholder="New collection…"
+          (keydown.enter)="createAndAdd($event)"
+          (click)="$event.stopPropagation()"
+          maxlength="100"
+          class="new-col-input"
+        />
+        <button
+          class="btn-new-col"
+          (click)="createAndAdd($event)"
+          [disabled]="newNameControl.invalid || creating()"
+        >{{ creating() ? '…' : '+' }}</button>
+      </div>
+    </div>
+  }
+</div>

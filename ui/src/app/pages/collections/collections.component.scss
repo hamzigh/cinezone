@@ -1,0 +1,153 @@
+.collections-page {
+  min-height: 100vh;
+  padding: 2rem 0 4rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.4rem;
+  }
+
+  .sub {
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+    font-size: 0.95rem;
+  }
+}
+
+.create-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.create-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 0.65rem 1rem;
+  transition: border-color 0.2s;
+
+  &::placeholder { color: rgba(255, 255, 255, 0.35); }
+  &:focus { outline: none; border-color: rgba(255, 255, 255, 0.4); }
+}
+
+.btn-create {
+  background: #e50914;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, opacity 0.2s;
+
+  &:hover:not(:disabled) { background: #c8070f; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.status-text {
+  color: rgba(255, 255, 255, 0.4);
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 0;
+  color: rgba(255, 255, 255, 0.45);
+
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  p { margin: 0.3rem 0; font-size: 1rem; }
+  .empty-hint { font-size: 0.85rem; }
+}
+
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.collection-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+
+  &:hover { border-color: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+}
+
+.card-main {
+  padding: 1.25rem 1.25rem 0.75rem;
+  cursor: pointer;
+}
+
+.col-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-count {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.rename-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1rem;
+  padding: 0.4rem 0.6rem;
+  box-sizing: border-box;
+  margin-bottom: 0.4rem;
+
+  &:focus { outline: none; border-color: rgba(255, 255, 255, 0.6); }
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.75rem 1.25rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.btn-action {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.78rem;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+
+  &:hover { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  &.btn-save {
+    background: #e50914;
+    border-color: #e50914;
+    color: #fff;
+    &:hover:not(:disabled) { background: #c8070f; }
+  }
+
+  &.btn-cancel:hover { color: rgba(255, 255, 255, 0.8); }
+
+  &.btn-danger:hover { color: #ff6b6b; border-color: #ff6b6b; }
+}
