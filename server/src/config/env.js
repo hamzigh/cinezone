@@ -11,6 +11,9 @@ module.exports = {
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:4200',
   vidapiBaseUrl: process.env.VIDAPI_BASE_URL || 'https://vidapi.ru',
   vidapiPlayerBaseUrl: process.env.VIDAPI_PLAYER_BASE_URL || 'https://vidsrc-embed.ru',
+  tmdb: {
+    apiKey: process.env.TMDB_API_KEY || ''
+  },
   imdb: {
     apiKey: process.env.IMDB_API_KEY || '',
     dataSetId: process.env.IMDB_DATA_SET_ID || '',

@@ -39,12 +39,17 @@ async function fetchLatestMovies(pages = 10) {
   return movies;
 }
 
+function embedParam(id) {
+  // IMDB IDs start with "tt"; numeric IDs come from TMDB
+  return /^\d+$/.test(id) ? `tmdb=${encodeURIComponent(id)}` : `imdb=${encodeURIComponent(id)}`;
+}
+
 function getMovieEmbedUrl(id) {
-  return `${env.vidapiPlayerBaseUrl}/embed/movie?imdb=${encodeURIComponent(id)}`;
+  return `${env.vidapiPlayerBaseUrl}/embed/movie?${embedParam(id)}`;
 }
 
 function getTVEmbedUrl(id) {
-  return `${env.vidapiPlayerBaseUrl}/embed/tv?imdb=${encodeURIComponent(id)}`;
+  return `${env.vidapiPlayerBaseUrl}/embed/tv?${embedParam(id)}`;
 }
 
 module.exports = {

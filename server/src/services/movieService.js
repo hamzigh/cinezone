@@ -1,5 +1,6 @@
 const HttpError = require('../utils/httpError');
 const imdbService = require('./imdbService');
+const tmdbService = require('./tmdbService');
 const vidapiService = require('./vidapiService');
 
 let cachedMovies = [];
@@ -29,10 +30,15 @@ function filterMovies(movies, search, genre) {
 }
 
 async function listMovies({ search, genre }) {
-  if (search && imdbService.isConfigured()) {
-    const imdbMovies = await imdbService.searchMovies(search, genre);
-    if (imdbMovies?.length) {
-      return imdbMovies;
+  if (search) {
+    if (imdbService.isConfigured()) {
+      const results = await imdbService.searchMovies(search, genre);
+      if (results?.length) return results;
+    }
+
+    if (tmdbService.isConfigured()) {
+      const results = await tmdbService.searchMovies(search, genre);
+      if (results?.length) return results;
     }
   }
 
@@ -41,17 +47,20 @@ async function listMovies({ search, genre }) {
 }
 
 async function getMovie(id) {
-  const imdbMovie = await imdbService.getMovie(id);
-  if (imdbMovie) {
-    return imdbMovie;
+  // Numeric IDs come from TMDB search results
+  if (/^\d+$/.test(id) && tmdbService.isConfigured()) {
+    const movie = await tmdbService.getMovie(id);
+    if (movie) return movie;
+  }
+
+  if (imdbService.isConfigured()) {
+    const movie = await imdbService.getMovie(id);
+    if (movie) return movie;
   }
 
   const catalog = await getCatalog();
   const movie = catalog.find((item) => item.id === id);
-  if (!movie) {
-    throw new HttpError(404, 'Movie not found');
-  }
-
+  if (!movie) throw new HttpError(404, 'Movie not found');
   return movie;
 }
 
